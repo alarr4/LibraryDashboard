@@ -83,3 +83,4 @@ author_chart = alt.Chart(books_per_author).mark_bar(color='orange').encode(
     tooltip=['Author', 'BookCount']
 )
 st.altair_chart(author_chart, use_container_width=True)
+Switch MySQL to CSV for free deployment
