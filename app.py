@@ -32,3 +32,7 @@ books_per_author = df.groupby('Author').size()
 st.subheader("Number of Books per Author")
 st.bar_chart(books_per_author)
 # Switch MySQL to CSV for free deployment
+# Fill missing values with placeholder
+df['Title'] = df['Title'].fillna("Unknown Title")
+df['Author'] = df['Author'].fillna("Unknown Author")
+df['YearPublished'] = df['YearPublished'].fillna(0)
