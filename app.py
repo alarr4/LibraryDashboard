@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import altair as alt
 
 # Load CSV
 df = pd.read_csv("books.csv")
@@ -12,7 +13,7 @@ df['title'] = df['title'].fillna("Unknown Title")
 df['author'] = df['author'].fillna("Unknown Author")
 df['yearpublished'] = df['yearpublished'].fillna(0)
 
-# Calculate BookAge and clip at 0
+# Calculate BookAge
 df['bookage'] = (pd.Timestamp.now().year - df['yearpublished']).clip(lower=0)
 
 # --- Streamlit UI ---
@@ -43,11 +44,24 @@ filtered_df = filtered_df[(filtered_df['yearpublished'] >= year_range[0]) &
 st.subheader("Filtered Books")
 st.dataframe(filtered_df[['title','author','yearpublished','bookage']], height=400)
 
-# Charts
-st.subheader("Book Ages")
-st.bar_chart(filtered_df['bookage'])
+# --- Charts ---
 
+# 1️⃣ Book Ages Chart (Altair)
+st.subheader("Book Ages")
+bookage_chart = alt.Chart(filtered_df).mark_bar(color="#4CAF50").encode(
+    x=alt.X('title:N', sort='-y', title='Book Title'),
+    y=alt.Y('bookage:Q', title='Book Age'),
+    tooltip=['title', 'author', 'bookage']
+).properties(width=700, height=400)
+st.altair_chart(bookage_chart, use_container_width=True)
+
+# 2️⃣ Number of Books per Author
 st.subheader("Number of Books per Author")
-books_per_author = df.groupby('author').size()
-st.bar_chart(books_per_author)
+books_per_author = df.groupby('author').size().reset_index(name='count')
+author_chart = alt.Chart(books_per_author).mark_bar(color="#2196F3").encode(
+    x=alt.X('author:N', sort='-y', title='Author'),
+    y=alt.Y('count:Q', title='Number of Books'),
+    tooltip=['author', 'count']
+).properties(width=700, height=400)
+st.altair_chart(author_chart, use_container_width=True)
 # Switch MySQL to CSV for free deployment
