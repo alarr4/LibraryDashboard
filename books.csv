@@ -4,3 +4,7 @@ Author,NumberOfBooks
 "Herman Melville",4
 "Jane Austen",4
 "F. Scott Fitzgerald",4
+import pandas as pd
+import streamlit as st
+df = pd.read_csv("books.csv")
+st.write("Columns in CSV:", df.columns)
