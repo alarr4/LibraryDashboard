@@ -1,9 +1,6 @@
-BookID,Title,Author,YearPublished
-1,"The Hobbit","J.R.R. Tolkien",1937
-2,1984,"George Orwell",1949
-3,"The Hobbit","J.R.R. Tolkien",1937
-4,1984,"George Orwell",1949
-5,"The Hobbit","J.R.R. Tolkien",1937
-6,1984,"George Orwell",1949
-,NULL,,NULL
-NULL,NULL,NULL,NULL
+Author,NumberOfBooks
+"J.R.R. Tolkien",9
+"George Orwell",9
+"Herman Melville",4
+"Jane Austen",4
+"F. Scott Fitzgerald",4
