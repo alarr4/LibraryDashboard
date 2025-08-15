@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 
-# Load CSV
+# --- Load CSV ---
 df = pd.read_csv("books.csv")
 
 # Normalize column names
@@ -20,7 +20,7 @@ df['bookage'] = (pd.Timestamp.now().year - df['yearpublished']).clip(lower=0)
 st.set_page_config(page_title="Library Dashboard", layout="wide")
 st.title("📚 Library Book Dashboard")
 
-# Sidebar Filters
+# --- Sidebar Filters ---
 st.sidebar.header("Filters")
 authors = df['author'].unique()
 selected_author = st.sidebar.selectbox("Select an Author:", authors)
@@ -29,12 +29,22 @@ min_year = int(df['yearpublished'].min())
 max_year = int(df['yearpublished'].max())
 year_range = st.sidebar.slider("Select Year Range:", min_year, max_year, (min_year, max_year))
 
-# Apply Filters
+# Apply Sidebar Filters
 filtered_df = df[(df['author'] == selected_author) &
                  (df['yearpublished'] >= year_range[0]) &
                  (df['yearpublished'] <= year_range[1])]
 
-# Key Metrics at the top
+# --- Search Box & Sorting ---
+search_term = st.text_input("Search for a Book Title:")
+if search_term:
+    filtered_df = filtered_df[filtered_df['title'].str.contains(search_term, case=False, na=False)]
+
+sort_column = st.selectbox("Sort By:", ['title', 'author', 'yearpublished', 'bookage'])
+sort_order = st.radio("Sort Order:", ['Ascending', 'Descending'])
+ascending = True if sort_order == 'Ascending' else False
+filtered_df = filtered_df.sort_values(by=sort_column, ascending=ascending)
+
+# --- Key Metrics ---
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Books", len(filtered_df))
 col2.metric("Oldest Book Year", int(filtered_df['yearpublished'].min()))
@@ -43,7 +53,7 @@ col4.metric("Average Book Age", int(filtered_df['bookage'].mean()))
 
 st.markdown("---")
 
-# Table of filtered books
+# --- Filtered Table ---
 st.subheader("Filtered Books")
 st.dataframe(filtered_df[['title','author','yearpublished','bookage']], height=400)
 
@@ -51,7 +61,7 @@ st.dataframe(filtered_df[['title','author','yearpublished','bookage']], height=4
 st.subheader("Visual Analytics")
 chart_col1, chart_col2 = st.columns(2)
 
-# 1️⃣ Book Ages Chart
+# Book Ages Chart
 bookage_chart = alt.Chart(filtered_df).mark_bar(color="#4CAF50").encode(
     x=alt.X('title:N', sort='-y', title='Book Title'),
     y=alt.Y('bookage:Q', title='Book Age'),
@@ -59,7 +69,7 @@ bookage_chart = alt.Chart(filtered_df).mark_bar(color="#4CAF50").encode(
 ).properties(width=350, height=400)
 chart_col1.altair_chart(bookage_chart, use_container_width=True)
 
-# 2️⃣ Number of Books per Author
+# Number of Books per Author
 books_per_author = df.groupby('author').size().reset_index(name='count')
 author_chart = alt.Chart(books_per_author).mark_bar(color="#2196F3").encode(
     x=alt.X('author:N', sort='-y', title='Author'),
@@ -68,7 +78,7 @@ author_chart = alt.Chart(books_per_author).mark_bar(color="#2196F3").encode(
 ).properties(width=350, height=400)
 chart_col2.altair_chart(author_chart, use_container_width=True)
 
-# 3️⃣ Total Books Published Per Year (Full width below)
+# Total Books Published Per Year (Full width)
 st.subheader("Total Books Published Per Year")
 books_per_year = df.groupby('yearpublished').size().reset_index(name='count')
 year_chart = alt.Chart(books_per_year).mark_line(point=True, color="#FF5722").encode(
