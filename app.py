@@ -64,4 +64,15 @@ author_chart = alt.Chart(books_per_author).mark_bar(color="#2196F3").encode(
     tooltip=['author', 'count']
 ).properties(width=700, height=400)
 st.altair_chart(author_chart, use_container_width=True)
+# 3️⃣ Total Books Published Per Year
+st.subheader("Total Books Published Per Year")
+books_per_year = df.groupby('yearpublished').size().reset_index(name='count')
+
+year_chart = alt.Chart(books_per_year).mark_line(point=True, color="#FF5722").encode(
+    x=alt.X('yearpublished:O', title='Year Published'),
+    y=alt.Y('count:Q', title='Number of Books'),
+    tooltip=['yearpublished', 'count']
+).properties(width=700, height=400)
+
+st.altair_chart(year_chart, use_container_width=True)
 # Switch MySQL to CSV for free deployment
