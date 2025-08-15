@@ -4,6 +4,14 @@ import streamlit as st
 # Load CSV file
 df = pd.read_csv("books.csv")
 
+# Fill missing values
+df['Title'] = df['Title'].fillna("Unknown Title")
+df['Author'] = df['Author'].fillna("Unknown Author")
+df['YearPublished'] = df['YearPublished'].fillna(0)
+
+# Calculate BookAge
+df['BookAge'] = (pd.Timestamp.now().year - df['YearPublished']).clip(lower=0)
+
 st.title("📚 Library Book Dashboard")
 
 # 1️⃣ Author filter
@@ -18,21 +26,14 @@ year_range = st.slider("Select Year Range:", min_year, max_year, (min_year, max_
 filtered_df = filtered_df[(filtered_df['YearPublished'] >= year_range[0]) &
                           (filtered_df['YearPublished'] <= year_range[1])]
 
-# 3️⃣ Calculate BookAge and prevent negative values
-filtered_df['BookAge'] = (pd.Timestamp.now().year - filtered_df['YearPublished']).clip(lower=0)
-
-# 4️⃣ Display filtered table
+# 3️⃣ Display filtered table
 st.dataframe(filtered_df)
 
-# 5️⃣ Chart for filtered books
+# 4️⃣ Chart for filtered books
 st.bar_chart(filtered_df['BookAge'])
 
-# 6️⃣ Number of books per author
+# 5️⃣ Number of books per author
 books_per_author = df.groupby('Author').size()
 st.subheader("Number of Books per Author")
 st.bar_chart(books_per_author)
 # Switch MySQL to CSV for free deployment
-# Fill missing values with placeholder
-df['Title'] = df['Title'].fillna("Unknown Title")
-df['Author'] = df['Author'].fillna("Unknown Author")
-df['YearPublished'] = df['YearPublished'].fillna(0)
