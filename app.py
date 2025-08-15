@@ -61,27 +61,26 @@ st.dataframe(filtered_df[['title','author','yearpublished','bookage']], height=4
 st.subheader("Visual Analytics")
 chart_col1, chart_col2 = st.columns(2)
 
-# Book Ages Chart
+# 1️⃣ Book Ages Chart (Filtered)
 bookage_chart = alt.Chart(filtered_df).mark_bar(color="#4CAF50").encode(
     x=alt.X('title:N', sort='-y', title='Book Title'),
-    y=alt.Y('bookage:Q', title='Book Age'),
+    y=alt.Y('bookage:Q', title='Book Age', scale=alt.Scale(domain=[0, filtered_df['bookage'].max()])),
     tooltip=['title', 'author', 'bookage']
 ).properties(width=350, height=400)
 chart_col1.altair_chart(bookage_chart, use_container_width=True)
 
-# Number of Books per Author
-books_per_author = df.groupby('author').size().reset_index(name='count')
-author_chart = alt.Chart(books_per_author).mark_bar(color="#2196F3").encode(
+# 2️⃣ Number of Books per Author (Filtered)
+books_per_author_filtered = filtered_df.groupby('author').size().reset_index(name='count')
+author_chart = alt.Chart(books_per_author_filtered).mark_bar(color="#2196F3").encode(
     x=alt.X('author:N', sort='-y', title='Author'),
     y=alt.Y('count:Q', title='Number of Books'),
     tooltip=['author', 'count']
 ).properties(width=350, height=400)
 chart_col2.altair_chart(author_chart, use_container_width=True)
 
-# Total Books Published Per Year (Full width)
-st.subheader("Total Books Published Per Year")
-books_per_year = df.groupby('yearpublished').size().reset_index(name='count')
-year_chart = alt.Chart(books_per_year).mark_line(point=True, color="#FF5722").encode(
+# 3️⃣ Total Books Published Per Year (Filtered)
+books_per_year_filtered = filtered_df.groupby('yearpublished').size().reset_index(name='count')
+year_chart = alt.Chart(books_per_year_filtered).mark_line(point=True, color="#FF5722").encode(
     x=alt.X('yearpublished:O', title='Year Published'),
     y=alt.Y('count:Q', title='Number of Books'),
     tooltip=['yearpublished', 'count']
