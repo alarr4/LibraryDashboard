@@ -1,10 +1,15 @@
-Author,NumberOfBooks
-"J.R.R. Tolkien",9
-"George Orwell",9
-"Herman Melville",4
-"Jane Austen",4
-"F. Scott Fitzgerald",4
-import pandas as pd
-import streamlit as st
-df = pd.read_csv("books.csv")
-st.write("Columns in CSV:", df.columns)
+Title,Author,YearPublished
+The Hobbit,J.R.R. Tolkien,1937
+1984,George Orwell,1949
+Moby Dick,Herman Melville,1851
+Pride and Prejudice,Jane Austen,1813
+The Great Gatsby,F. Scott Fitzgerald,1925
+To Kill a Mockingbird,Harper Lee,1960
+The Catcher in the Rye,J.D. Salinger,1951
+Harry Potter and the Sorcerer's Stone,J.K. Rowling,1997
+The Lord of the Rings,J.R.R. Tolkien,1954
+The Chronicles of Narnia,C.S. Lewis,1950
+Animal Farm,George Orwell,1945
+Brave New World,Aldous Huxley,1932
+Jane Eyre,Charlotte Bronte,1847
+Wuthering Heights,Emily Bronte,1847
